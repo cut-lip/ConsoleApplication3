@@ -9,7 +9,7 @@
 #include "OpenGLPrac.h"
 
 const int HORIZONTAL_SIZE = 400;
-const int VERTICAL_SIZE = 240;
+const int VERTICAL_SIZE = 250;
 const int DATA_DIMENSION = 6;
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GLintPoint >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -123,9 +123,9 @@ void drawArrow(GLintPoint start, GLintPoint end)
         GLvec2 perpendicular = GLvec2(direction);
         perpendicular.Perpendicu();
     
-        GLvec2 pt1 = p2 - direction * (VERTICAL_SIZE / 80) * 3;
-        GLvec2 pt2 = pt1 - perpendicular * (VERTICAL_SIZE / 80);
-        GLvec2 pt3 = pt1 + perpendicular * (VERTICAL_SIZE / 80);
+        GLvec2 pt1 = p2 - direction * (VERTICAL_SIZE / 60) * 3;
+        GLvec2 pt2 = pt1 - perpendicular * (VERTICAL_SIZE / 60);
+        GLvec2 pt3 = pt1 + perpendicular * (VERTICAL_SIZE/ 60);
 
         glVertex2i(p2.x, p2.y);
         glVertex2i(pt2.x, pt2.y);
@@ -144,6 +144,30 @@ void drawParallelCoords(int dimension)
     }
 }
 
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawShiftedParallelCoordinates >>>>>>>>>>>>
+void drawShiftedParallelCoords()
+{
+    GLint yCoords[6] = { 100, 30, 90, 20, 95, 0 };
+    for (int cnt = 0, i = HORIZONTAL_SIZE / 20; i < HORIZONTAL_SIZE;
+        i += (HORIZONTAL_SIZE - (2 * (HORIZONTAL_SIZE / 20))) / 5)
+    {
+        drawArrow(GLintPoint(i, yCoords[cnt]), GLintPoint(i, yCoords[cnt] + 200));
+        cnt++;
+    }
+}
+
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawScaledParallelCoords >>>>>>>>>>>>
+void drawScaledParallelCoords()
+{
+    GLint yCoords[6] = { 150, 90, 130, 110, 230, 100 };
+    for (int cnt = 0, i = HORIZONTAL_SIZE / 20; i < HORIZONTAL_SIZE;
+        i += (HORIZONTAL_SIZE - (2 * (HORIZONTAL_SIZE / 20))) / 5)
+    {
+        drawArrow(GLintPoint(i, 0), GLintPoint(i, yCoords[cnt]));
+        cnt++;
+    }
+}
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawPCgraph >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 void drawPCgraph(GL6DimensionalPoint n)
 {
@@ -156,6 +180,7 @@ void drawPCgraph(GL6DimensionalPoint n)
         cnt++;
     }
 };
+
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> myInit >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 void myInit()
@@ -171,12 +196,23 @@ void myInit()
 void myDisplay()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    drawParallelCoords(DATA_DIMENSION);
+
+    //drawShiftedParallelCoords();
+    //drawParallelCoords(DATA_DIMENSION);
+    drawScaledParallelCoords();
     glLineWidth(2.5);
+
     glColor3f(1.0, 0.6, 0.0);
-    drawPCgraph(GL6DimensionalPoint(75, 180, 125, 200, 50, 220));
+    //drawPCgraph(GL6DimensionalPoint(75, 180, 125, 200, 50, 220));     // For Parallel Coords
+    //drawPCgraph(GL6DimensionalPoint(130, 130, 130, 130, 130, 130));     // For Shifted PC
+    drawPCgraph(GL6DimensionalPoint(50, 50, 50, 50, 50, 50));     // For scaled PC
+
     glColor3f(0.0, 1.0, 0.0);
-    drawPCgraph(GL6DimensionalPoint(60, 150, 115, 140, 30, 180));
+    //drawPCgraph(GL6DimensionalPoint(60, 150, 115, 140, 30, 180));     // For Parallel Coords
+    //drawPCgraph(GL6DimensionalPoint(140, 150, 145, 140, 160, 150));     // For Shifted PC
+    drawPCgraph(GL6DimensionalPoint(60, 70, 65, 60, 80, 70));     // For scaled PC
+    //drawNonOrthoPC()
+
     glFlush();      // Send all output to display
     //drawArrow(GLintPoint(100, 100), GLintPoint(200, 200));
 }
