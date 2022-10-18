@@ -3,6 +3,7 @@
 ///////////////////////////
 
 #include <iostream>
+#include <vector>
 #include <math.h>
 #include <vector>
 #include "GL\glut.h"
@@ -29,6 +30,7 @@ class GL6DimensionalPoint {
 public:
     GLfloat d1, d2, d3, d4, d5, d6;
 
+    // Construct from GLfloats
     GL6DimensionalPoint(GLfloat d1, GLfloat d2, GLfloat d3, GLfloat d4, GLfloat d5, GLfloat d6) {
         this->d1 = d1;
         this->d2 = d2;
@@ -36,6 +38,17 @@ public:
         this->d4 = d4;
         this->d5 = d5;
         this->d6 = d6;
+    }
+
+    // Construct from vector
+    GL6DimensionalPoint(std::vector<float> v)
+    {
+        this->d1 = v.at(0);
+        this->d2 = v.at(1);
+        this->d3 = v.at(2);
+        this->d4 = v.at(3);
+        this->d5 = v.at(4);
+        this->d6 = v.at(5);
     }
 
     std::vector<float> toVector() {
@@ -144,10 +157,11 @@ void drawParallelCoords(int dimension)
     }
 }
 
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawShiftedParallelCoordinates >>>>>>>>>>>>
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawShiftedParallelCoordinates >>>>>>>>>>>>>>>>>>>
 void drawShiftedParallelCoords()
 {
     GLint yCoords[6] = { 100, 30, 90, 20, 95, 0 };
+
     for (int cnt = 0, i = HORIZONTAL_SIZE / 20; i < HORIZONTAL_SIZE;
         i += (HORIZONTAL_SIZE - (2 * (HORIZONTAL_SIZE / 20))) / 5)
     {
@@ -156,7 +170,7 @@ void drawShiftedParallelCoords()
     }
 }
 
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawScaledParallelCoords >>>>>>>>>>>>
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawScaledParallelCoords >>>>>>>>>>>>>>>>>>>>>>>>>
 void drawScaledParallelCoords()
 {
     GLint yCoords[6] = { 150, 90, 130, 110, 230, 100 };
@@ -168,7 +182,18 @@ void drawScaledParallelCoords()
     }
 }
 
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawPCgraph >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawNonOrthoPC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+void drawNonOrthoPC()
+{
+
+}
+
+void drawRadialCoords(GLint dimension)
+{
+
+}
+
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawPCgraph >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 void drawPCgraph(GL6DimensionalPoint n)
 {
     std::vector<float> data = n.toVector();
@@ -180,6 +205,18 @@ void drawPCgraph(GL6DimensionalPoint n)
         cnt++;
     }
 };
+
+// Scale the values of an n-D point by the given anchor point
+GL6DimensionalPoint scalePoint(GL6DimensionalPoint n, GLint anchor)
+{
+    std::vector<float> v = n.toVector();
+    for (int i = 0; i < v.size(); i++)
+    {
+        if (i != anchor) { v.at(i) = v.at(i) - v.at(anchor); }
+    }
+
+    return GL6DimensionalPoint(v);
+}
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> myInit >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -197,21 +234,26 @@ void myDisplay()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //drawShiftedParallelCoords();
+    drawShiftedParallelCoords();
     //drawParallelCoords(DATA_DIMENSION);
-    drawScaledParallelCoords();
+    //drawScaledParallelCoords();
+
+    //drawNonOrthoPC();
+
+    //drawRadialCoords();
     glLineWidth(2.5);
 
     glColor3f(1.0, 0.6, 0.0);
     //drawPCgraph(GL6DimensionalPoint(75, 180, 125, 200, 50, 220));     // For Parallel Coords
-    //drawPCgraph(GL6DimensionalPoint(130, 130, 130, 130, 130, 130));     // For Shifted PC
-    drawPCgraph(GL6DimensionalPoint(50, 50, 50, 50, 50, 50));     // For scaled PC
+    drawPCgraph(GL6DimensionalPoint(130, 130, 130, 130, 130, 130));     // For Shifted PC
+    //drawPCgraph(GL6DimensionalPoint(50, 50, 50, 50, 50, 50));     // For scaled PC
 
     glColor3f(0.0, 1.0, 0.0);
-    //drawPCgraph(GL6DimensionalPoint(60, 150, 115, 140, 30, 180));     // For Parallel Coords
+    drawPCgraph(GL6DimensionalPoint(60, 150, 115, 140, 30, 180));     // For Parallel Coords
     //drawPCgraph(GL6DimensionalPoint(140, 150, 145, 140, 160, 150));     // For Shifted PC
-    drawPCgraph(GL6DimensionalPoint(60, 70, 65, 60, 80, 70));     // For scaled PC
-    //drawNonOrthoPC()
+    //drawPCgraph(GL6DimensionalPoint(60, 70, 65, 60, 80, 70));     // For scaled PC
+
+    //drawNonOrthoPC();
 
     glFlush();      // Send all output to display
     //drawArrow(GLintPoint(100, 100), GLintPoint(200, 200));
@@ -224,7 +266,7 @@ int main(int argc, char** argv)
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);     // Set display mode
     glutInitWindowSize(HORIZONTAL_SIZE, VERTICAL_SIZE);                    // Set window size
     glutInitWindowPosition(100, 150);                // Set window position (on screen)
-    glutCreateWindow("my first attempt");            // Open screen window
+    glutCreateWindow("GLC Visualization");            // Open screen window
 
     glutDisplayFunc(myDisplay);
     myInit();
