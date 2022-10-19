@@ -28,6 +28,7 @@ public:
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GL6DimensionalPoint >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 class GL6DimensionalPoint {
 public:
+    // Add getters and make these private
     GLfloat d1, d2, d3, d4, d5, d6;
 
     // Construct from GLfloats
@@ -56,6 +57,18 @@ public:
         return vec;
     }
 };
+
+// Scale the values of an n-D point by the given anchor point
+GL6DimensionalPoint shiftPoint(GL6DimensionalPoint n, GLint anchor)
+{
+    std::vector<float> v = n.toVector();
+    for (int i = 0; i < v.size(); i++)
+    {
+        if (i != anchor) { v.at(i) += (v.at(anchor) - v.at(i)); }
+    }
+
+    return GL6DimensionalPoint(v);
+}
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GLvec2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 class GLvec2    // A 2-D vector
@@ -158,14 +171,16 @@ void drawParallelCoords(int dimension)
 }
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawShiftedParallelCoordinates >>>>>>>>>>>>>>>>>>>
-void drawShiftedParallelCoords()
+void drawShiftedParallelCoords(GLint anchor)
 {
-    GLint yCoords[6] = { 100, 30, 90, 20, 95, 0 };
+    float shift = VERTICAL_SIZE - 5;
+    std::vector<float> yCoords = { shift, shift, shift, shift, shift, shift };
+    std::vector<float> yCoordsShifted = shiftPoint(GL6DimensionalPoint(yCoords), anchor).toVector();
 
     for (int cnt = 0, i = HORIZONTAL_SIZE / 20; i < HORIZONTAL_SIZE;
         i += (HORIZONTAL_SIZE - (2 * (HORIZONTAL_SIZE / 20))) / 5)
     {
-        drawArrow(GLintPoint(i, yCoords[cnt]), GLintPoint(i, yCoords[cnt] + 200));
+        drawArrow(GLintPoint(i, yCoordsShifted[cnt]), GLintPoint(i, yCoordsShifted[cnt] + 200));
         cnt++;
     }
 }
@@ -206,19 +221,6 @@ void drawPCgraph(GL6DimensionalPoint n)
     }
 };
 
-// Scale the values of an n-D point by the given anchor point
-GL6DimensionalPoint scalePoint(GL6DimensionalPoint n, GLint anchor)
-{
-    std::vector<float> v = n.toVector();
-    for (int i = 0; i < v.size(); i++)
-    {
-        if (i != anchor) { v.at(i) = v.at(i) - v.at(anchor); }
-    }
-
-    return GL6DimensionalPoint(v);
-}
-
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> myInit >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 void myInit()
 {
@@ -230,13 +232,28 @@ void myInit()
     gluOrtho2D(0.0, HORIZONTAL_SIZE, 0.0, VERTICAL_SIZE);
 }
 
+void setWindow(float left, float right, float bottom, float top)
+{
+
+}
+
+void setViewport(float left, float right, float bottom, float top)
+{
+    glViewport(left, bottom, right - left, top - bottom);
+}
+
 void myDisplay()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    drawShiftedParallelCoords();
+    int anchor = 4;
+
+    drawShiftedParallelCoords(anchor);
     //drawParallelCoords(DATA_DIMENSION);
     //drawScaledParallelCoords();
+
+    GL6DimensionalPoint pointy = GL6DimensionalPoint(75, 180, 125, 200, 50, 220);
+    GL6DimensionalPoint pointy2 = GL6DimensionalPoint(59, 140, 100, 150, 25, 180);
 
     //drawNonOrthoPC();
 
@@ -244,13 +261,13 @@ void myDisplay()
     glLineWidth(2.5);
 
     glColor3f(1.0, 0.6, 0.0);
-    //drawPCgraph(GL6DimensionalPoint(75, 180, 125, 200, 50, 220));     // For Parallel Coords
-    drawPCgraph(GL6DimensionalPoint(130, 130, 130, 130, 130, 130));     // For Shifted PC
+    //drawPCgraph(GL6DimensionalPoint(pointy));     // For Parallel Coords
+    drawPCgraph(GL6DimensionalPoint(shiftPoint(pointy, anchor)));     // For Shifted PC (choose anchor dimension for shiftPoint()
     //drawPCgraph(GL6DimensionalPoint(50, 50, 50, 50, 50, 50));     // For scaled PC
 
     glColor3f(0.0, 1.0, 0.0);
-    drawPCgraph(GL6DimensionalPoint(60, 150, 115, 140, 30, 180));     // For Parallel Coords
-    //drawPCgraph(GL6DimensionalPoint(140, 150, 145, 140, 160, 150));     // For Shifted PC
+    //drawPCgraph(GL6DimensionalPoint(60, 150, 115, 140, 30, 180));     // For Parallel Coords
+    drawPCgraph(GL6DimensionalPoint(shiftPoint(pointy2, 4)));     // For Shifted PC
     //drawPCgraph(GL6DimensionalPoint(60, 70, 65, 60, 80, 70));     // For scaled PC
 
     //drawNonOrthoPC();
