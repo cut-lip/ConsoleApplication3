@@ -58,3 +58,52 @@ public:
 private:
 	int l, r, b, t;
 };
+
+// Defines an aligned rectangle with integer coordinates to describe the viewport
+class RealRect
+{
+public:
+	RealRect() {
+		l = 0.0;
+		r = 100.0;
+		b = 0.0;
+		t = 100.0;
+	}
+
+	RealRect(int left, int right, int bottom, int top)
+	{
+		l = left;
+		r = right;
+		b = bottom;
+		t = top;
+	}
+
+	void set(int left, int right, int bottom, int top)
+	{
+		l = left; r = right; b = bottom; t = top;
+	}
+
+	void draw(void)
+	{
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(l, b);
+		glVertex2i(l, t);
+		glVertex2i(r, t);
+		glVertex2i(r, b);
+		glEnd();
+	}
+
+private:
+	float l, r, b, t;
+};
+
+class Canvas
+{
+public:
+	// Constructor
+	Canvas(int width, int height, char* windowTitle);
+
+private:
+
+
+};
