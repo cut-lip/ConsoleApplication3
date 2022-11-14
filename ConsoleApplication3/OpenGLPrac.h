@@ -1,7 +1,15 @@
+// Methods I've created for convinience with OpenGL
+
 #include <GL/glut.h>
 
-const int HORIZONTAL_SIZE = 1080;
-const int VERTICAL_SIZE = 720;
+// Horizontal viewport size
+const int HORIZONTAL_SIZE = 920;
+
+// Vertical viewport size
+const int VERTICAL_SIZE = 680;
+
+// Global current position (CP)
+GLintPoint CP;
 
 namespace GLprac {
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GLintPoint >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -110,6 +118,29 @@ namespace GLprac {
         }
     };
 
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> moveTo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    void moveto(GLint x, GLint y)
+    {
+        // Update the current position
+        CP.x = x;
+        CP.y = y;
+    }
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> lineTo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    void lineto(GLint x, GLint y)
+    {
+        // Draw the line
+        glBegin(GL_LINES);
+            glVertex2i(CP.x, CP.y);
+            glVertex2i(x, y);
+        glEnd();
+        glFlush();
+
+        // Update Current Position
+        CP.x = x;
+        CP.y = y;
+    }
+
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawDot >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     void drawDot(GLint x, GLint y)
     {
@@ -140,9 +171,9 @@ namespace GLprac {
         GLvec2 perpendicular = GLvec2(direction);
         perpendicular.Perpendicu();
 
-        GLvec2 pt1 = p2 - direction * (VERTICAL_SIZE / 60) * 3;
-        GLvec2 pt2 = pt1 - perpendicular * (VERTICAL_SIZE / 60);
-        GLvec2 pt3 = pt1 + perpendicular * (VERTICAL_SIZE / 60);
+        GLvec2 pt1 = p2 - direction * (VERTICAL_SIZE / 80) * 3;
+        GLvec2 pt2 = pt1 - perpendicular * (VERTICAL_SIZE / 80);
+        GLvec2 pt3 = pt1 + perpendicular * (VERTICAL_SIZE / 80);
 
         glVertex2i(p2.x, p2.y);
         glVertex2i(pt2.x, pt2.y);
@@ -223,14 +254,17 @@ namespace GLprac {
     }
 
     // Adapted from StackOverflow: https://stackoverflow.com/questions/22444450/drawing-circle-with-opengl
+    // Draw a circle to the viewport from the given parameters
     void drawCircle(float cx, float cy, float r, int num_segments) {
         glBegin(GL_LINE_LOOP);
+
         for (int i = 0; i < num_segments; i++) {
             float theta = 2.0f * 3.1415926f * float(i) / float(num_segments);      //get the current angle 
             float x = r * cosf(theta);      //calculate the x component 
             float y = r * sinf(theta);      //calculate the y component 
             glVertex2f(x + cx, y + cy);     //output vertex 
         }
+
         glEnd();
     }
 }
