@@ -1,6 +1,7 @@
 // Methods I've created for convinience with OpenGL
 
 #include <GL/glut.h>
+#include "Canvas.h"
 
 // Horizontal viewport size
 const int HORIZONTAL_SIZE = 920;
@@ -135,7 +136,6 @@ namespace GLprac {
             glVertex2i(x, y);
         glEnd();
         glFlush();
-
         // Update Current Position
         CP.x = x;
         CP.y = y;
@@ -268,3 +268,83 @@ namespace GLprac {
         glEnd();
     }
 }
+
+// Defines a 2-D point consisting of two floating point values
+class Point2 {
+public:
+    Point2() { x = y = 0.0; }
+    Point2(float xx, float yy) { x = xx; y = yy; }
+
+    void set(float xx, float yy) { x = xx; y = yy; }
+    float getX() { return x; }
+    float getY() { return y; }
+    void draw(void)
+    {
+        glBegin(GL_POINTS);
+        glVertex2f((GLfloat)x, (GLfloat)y);
+        glEnd();
+    }
+private:
+    float x, y;
+};
+
+// Defines an aligned rectangle with integer coordinates to describe the viewport
+class IntRect
+{
+public:
+    // Constructors
+    IntRect() { l = 0; r = 100; b = 0; t = 100; }
+
+    IntRect(int left, int right, int bottom, int top)
+    {
+        l = left; r = right; b = bottom; t = top;
+    }
+
+    void set(int left, int right, int bottom, int top)
+    {
+        l = left; r = right; b = bottom; t = top;
+    }
+
+    void draw(void)
+    {
+        glBegin(GL_LINE_LOOP);
+        glVertex2i(l, b);
+        glVertex2i(l, t);
+        glVertex2i(r, t);
+        glVertex2i(r, b);
+        glEnd();
+    }
+
+private:
+    int l, r, b, t;
+};
+
+// Defines an aligned rectangle with floating point coordinates to describe the world window
+class RealRect
+{
+public:
+    RealRect() { l = 0.0; r = 100.0; b = 0.0; t = 100.0; }
+
+    RealRect(float left, float right, float bottom, float top)
+    {
+        l = left; r = right; b = bottom; t = top;
+    }
+
+    void set(float left, float right, float bottom, float top)
+    {
+        l = left; r = right; b = bottom; t = top;
+    }
+
+    void draw(void)
+    {
+        glBegin(GL_LINE_LOOP);
+        glVertex2i(l, b);
+        glVertex2i(l, t);
+        glVertex2i(r, t);
+        glVertex2i(r, b);
+        glEnd();
+    }
+
+private:
+    float l, r, b, t;
+};
