@@ -1,4 +1,5 @@
 // Methods I've created for convinience with OpenGL
+#pragma once
 
 #include <GL/glut.h>
 #include "Canvas.h"

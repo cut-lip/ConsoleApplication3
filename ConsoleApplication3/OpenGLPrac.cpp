@@ -8,6 +8,7 @@
 #include <vector>
 #include "GL\glut.h"
 #include "OpenGLPrac.h"
+#include "Canvas.h"
 
 using namespace GLprac;
 
@@ -20,9 +21,8 @@ void myInit()
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glColor3f(0.0f, 0.0f, 1.0f);
     glPointSize(4.0);
+    glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
-    // glLoadIdentity(); // Why would this by necessary?
-    // 
     // gluOrtho2D is used for the case of projecting a 2D image onto a 2D screen
     gluOrtho2D(-HORIZONTAL_SIZE, HORIZONTAL_SIZE, -VERTICAL_SIZE, VERTICAL_SIZE);
 }
